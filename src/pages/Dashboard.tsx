@@ -1,7 +1,9 @@
-import { Thermometer, Droplets, CloudRain, Wind, Beaker, Sun, CheckCircle, Waves, Brain } from 'lucide-react';
+import { Thermometer, Droplets, CloudRain, Wind, Beaker, Sun, CheckCircle, Waves, Brain, Settings } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageContext';
+import { useSetups } from '@/contexts/SetupContext';
 import SensorCard from '@/components/SensorCard';
 import Navbar from '@/components/Navbar';
+import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 // Mock 24h sensor data
@@ -14,7 +16,9 @@ const chartData = Array.from({ length: 24 }, (_, i) => ({
 
 const Dashboard = () => {
   const { t } = useLanguage();
-
+  const { setups, activeSetupId } = useSetups();
+  const navigate = useNavigate();
+  const activeSetup = setups.find(s => s.id === activeSetupId) || setups[0];
   const sensors = [
     { icon: Thermometer, label: t('temperature'), value: '28.5', unit: '°C', status: 'normal' as const },
     { icon: Droplets, label: t('humidity'), value: '72', unit: '%', status: 'normal' as const },
@@ -29,9 +33,20 @@ const Dashboard = () => {
       <Navbar />
       <div className="pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">{t('dashTitle')}</h1>
-          <p className="text-muted-foreground mt-1">{t('dashSubtitle')}</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+              {activeSetup ? activeSetup.name : t('dashTitle')}
+            </h1>
+            <p className="text-muted-foreground mt-1">{t('dashSubtitle')}</p>
+          </div>
+          <button
+            onClick={() => navigate('/setups')}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:bg-accent transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('setupManage')}</span>
+          </button>
         </div>
 
         {/* Status banner */}

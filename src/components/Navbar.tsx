@@ -12,6 +12,7 @@ const Navbar = () => {
 
   const links = [
     { key: 'navHome', path: '/' },
+    { key: 'navSetups', path: '/setups' },
     { key: 'navDashboard', path: '/dashboard' },
     { key: 'navFeatures', path: '/#features' },
     { key: 'navImpact', path: '/#impact' },
